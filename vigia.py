@@ -39,33 +39,28 @@ def enviar_aviso(nome, link, silencioso=False):
     try:
         requests.post(url, data=payload)
     except:
-        print("Erro ao enviar para o Telegram.")
+        print("Erro no Telegram.")
 
 print("🔍 Monitor Mendeshop Ativo!")
 
 while True:
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
-            # Identificação de navegador real para evitar bloqueios
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
-            }
-            # allow_redirects=True é fundamental para links encurtados (tinyurl)
+            # Engana o bloqueio fingindo ser um navegador real
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            # 'allow_redirects=True' resolve o problema do link cair no TinyURL
             resposta = requests.get(link, headers=headers, timeout=30, allow_redirects=True)
             
-            if resposta.status_code != 200:
-                print(f"🚩 Status {resposta.status_code} em: {nome}")
-                enviar_aviso(f"VERIFICAR: {nome}", link, silencioso=False)
-            else:
+            if resposta.status_code == 200:
                 print(f"✅ OK: {nome}")
-        except Exception as e:
-            print(f"❌ Erro de Conexão em {nome}")
-            
-    # Mensagem de ronda concluída (silenciosa)
-    enviar_aviso("RONDA CONCLUÍDA", "Todos os links verificados.", silencioso=True)
+            else:
+                print(f"🚩 Status {resposta.status_code} em: {nome}")
+                enviar_aviso(f"CAIU: {nome}", link)
+        except:
+            print(f"❌ Erro de conexão em {nome}")
     
-    print("⏳ Tudo conferido. Aguardando 2 minutos...")
-    time.sleep(120) # Intervalo de 2 minutos para não sobrecarregar
+    enviar_aviso("RONDA CONCLUÍDA", "Tudo checado!", silencioso=True)
+    time.sleep(120) # Espera 2 minutos para evitar novos bloqueios
     
     enviar_aviso("RONDA CONCLUÍDA", "Todos os itens foram checados e estão OK.", silencioso=True)
     print("⏳ Tudo conferido. Aguardando 1 minuto...")
