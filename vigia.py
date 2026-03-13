@@ -46,16 +46,26 @@ print("🔍 Monitor Mendeshop Ativo!")
 while True:
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
-            headers = {'User-Agent': 'Mozilla/5.0'}
-            resposta = requests.get(link, headers=headers, timeout=20)
+            # Identificação de navegador real para evitar bloqueios
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+            }
+            # allow_redirects=True é fundamental para links encurtados (tinyurl)
+            resposta = requests.get(link, headers=headers, timeout=30, allow_redirects=True)
+            
             if resposta.status_code != 200:
-                print(f"🚩 Problema: {nome}")
-                enviar_aviso(f"CAIU: {nome}", link, silencioso=False)
+                print(f"🚩 Status {resposta.status_code} em: {nome}")
+                enviar_aviso(f"VERIFICAR: {nome}", link, silencioso=False)
             else:
                 print(f"✅ OK: {nome}")
-        except:
-            print(f"❌ Erro de Conexão: {nome}")
-            enviar_aviso(f"ERRO CONEXÃO: {nome}", link, silencioso=False)
+        except Exception as e:
+            print(f"❌ Erro de Conexão em {nome}")
+            
+    # Mensagem de ronda concluída (silenciosa)
+    enviar_aviso("RONDA CONCLUÍDA", "Todos os links verificados.", silencioso=True)
+    
+    print("⏳ Tudo conferido. Aguardando 2 minutos...")
+    time.sleep(120) # Intervalo de 2 minutos para não sobrecarregar
     
     enviar_aviso("RONDA CONCLUÍDA", "Todos os itens foram checados e estão OK.", silencioso=True)
     print("⏳ Tudo conferido. Aguardando 1 minuto...")
