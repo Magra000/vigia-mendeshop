@@ -7,7 +7,7 @@ CHAT_ID = "982976668"
 
 # Lista completa da Mendeshop
 LINKS_PARA_VIGIAR = {
-    "Lápis de Cor - ML": "https://tinyurl.com/mendes-lapis",
+    "Lápis de Cor - ML": "https://tinyurl.com/mendes-lapis",
     "Samsung A56": "https://tinyurl.com/mendes-samsung-a56",
     "Ventilador de mesa 40cm": "https://tinyurl.com/mendes-vent-mesa",
     "Projetor 4k": "https://tinyurl.com/mendes-projetor-4k",
@@ -28,37 +28,35 @@ LINKS_PARA_VIGIAR = {
 }
 
 def enviar_aviso(nome, link, silencioso=False):
-    mensagem = f"🚩 **STATUS MENDESHOP**\n\n📦 Item: **{nome}**\n🔗 Link: {link}"
-    url = f"https://api.telegram.org/bot{TOKEN_TELEGRAM}/sendMessage"
-    payload = {
-        "chat_id": CHAT_ID, 
-        "text": mensagem, 
-        "parse_mode": "Markdown",
-        "disable_notification": silencioso # Fica mudo se for apenas aviso de verificação
-    }
-    try:
-        requests.post(url, data=payload)
-    except:
-        print("Erro ao enviar para o Telegram.")
+    mensagem = f"🚩 **STATUS MENDESHOP**\n\n📦 Item: **{nome}**\n🔗 Link: {link}"
+    url = f"https://api.telegram.org/bot{TOKEN_TELEGRAM}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": mensagem,
+        "parse_mode": "Markdown",
+        "disable_notification": silencioso
+    }
+    try:
+        requests.post(url, data=payload)
+    except:
+        print("Erro ao enviar para o Telegram.")
 
 print("🔍 Monitor Mendeshop Ativo!")
 
 while True:
-    for nome, link in LINKS_PARA_VIGIAR.items():
-        try:
-            headers = {'User-Agent': 'Mozilla/5.0'}
-            resposta = requests.get(link, headers=headers, timeout=20)
-            if resposta.status_code != 200:
-                print(f"🚩 Problema: {nome}")
-                enviar_aviso(f"CAIU: {nome}", link, silencioso=False)
-            else:
-                print(f"✅ OK: {nome}")
-        except:
-            print(f"❌ Erro de Conexão: {nome}")
-            enviar_aviso(f"ERRO CONEXÃO: {nome}", link, silencioso=False)
-    
-    # Aviso de que tudo foi verificado (Silencioso para não incomodar)
-    enviar_aviso("RONDA CONCLUÍDA", "Todos os itens foram checados e estão OK.", silencioso=True)
-    
-    print("⏳ Tudo conferido. Aguardando 1 minuto...")
-    time.sleep(60) # Espera 1 minuto
+    for nome, link in LINKS_PARA_VIGIAR.items():
+        try:
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            resposta = requests.get(link, headers=headers, timeout=20)
+            if resposta.status_code != 200:
+                print(f"🚩 Problema: {nome}")
+                enviar_aviso(f"CAIU: {nome}", link, silencioso=False)
+            else:
+                print(f"✅ OK: {nome}")
+        except:
+            print(f"❌ Erro de Conexão: {nome}")
+            enviar_aviso(f"ERRO CONEXÃO: {nome}", link, silencioso=False)
+    
+    enviar_aviso("RONDA CONCLUÍDA", "Todos os itens foram checados e estão OK.", silencioso=True)
+    print("⏳ Tudo conferido. Aguardando 1 minuto...")
+    time.sleep(60)
