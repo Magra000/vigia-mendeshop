@@ -1,6 +1,8 @@
 import requests
 import time
 from datetime import datetime
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 # --- CONFIGURAÇÃO ---
 TOKEN_TELEGRAM = "8710482509:AAFIqDYVg00TZYJ5ydrLPzeVehXoPS28t_Q"
@@ -27,45 +29,48 @@ LINKS_PARA_VIGIAR = {
     "Teste Visualização Gloss": "https://www.mercadolivre.com.br/gloss-labial-franciny-ehlke-glossip-original/p/MLB20384757"
 }
 
-def enviar_aviso(nome, link, silencioso=False):
-    mensagem = f"🚩 **ALERTA MENDESHOP**\n\n📦 Item: **{nome}**\n🔗 Link: {link}"
+def run_dummy_server():
+    server_address = ('', 10000)
+    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+    print("🚀 Servidor 'Mantém-Vivo' ativo na porta 10000")
+    httpd.serve_forever()
+
+def enviar_aviso(mensagem_texto, link="", silencioso=False):
+    texto = f"🚩 **STATUS MENDESHOP**\n\n{mensagem_texto}"
+    if link:
+        texto += f"\n🔗 Link: {link}"
+    
     url = f"https://api.telegram.org/bot{TOKEN_TELEGRAM}/sendMessage"
-    payload = {"chat_id": CHAT_ID, "text": mensagem, "parse_mode": "Markdown", "disable_notification": silencioso}
+    payload = {"chat_id": CHAT_ID, "text": texto, "parse_mode": "Markdown", "disable_notification": silencioso}
     try:
         requests.post(url, data=payload)
     except:
         pass
 
-print("🔍 Monitor Mendeshop Ativo!")
+# Inicia o servidor fantasma
+threading.Thread(target=run_dummy_server, daemon=True).start()
 
-ultima_ronda_enviada = -1 # Guarda a hora da última notificação de status
+print("🔍 Monitor de Teste Ativo!")
+contador_teste = 0
 
 while True:
     agora = datetime.now()
-    hora_atual = agora.hour
-    minuto_atual = agora.minute
-
+    
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-            }
-            resposta = requests.get(link, headers=headers, timeout=30)
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            resposta = requests.get(link, headers=headers, timeout=15)
             
-            # Alerta imediato se o link cair (404)
             if resposta.status_code in [404, 410]:
-                print(f"🚩 LINK MORTO: {nome}")
                 enviar_aviso(f"🚨 LINK CAIU (404): {nome}", link)
-            else:
-                print(f"✅ OK: {nome}")
         except:
             print(f"❌ Erro de conexão em {nome}")
 
-    # Lógica para avisar apenas Meio-dia (12h) e Meia-noite (00h)
-    if hora_atual in [0, 12] and hora_atual != ultima_ronda_enviada:
-        enviar_aviso("☀️ STATUS DIÁRIO" if hora_atual == 12 else "🌙 STATUS NOTURNO", 
-                     "Ronda concluída. Todos os links estão ativos e a Mendeshop está OK!")
-        ultima_ronda_enviada = hora_atual # Registra que já avisou nesta hora
+    # A cada 4 rondas (2 minutos), ele manda um status de teste
+    contador_teste += 1
+    if contador_teste >= 4:
+        enviar_aviso("⚡ TESTE DE CONEXÃO\n\nO robô está ativo e o servidor fantasma está rodando!", silencioso=True)
+        contador_teste = 0
 
-    print(f"⏳ Ronda de {agora.strftime('%H:%M')} finalizada. Próxima em 5 min...")
-    time.sleep(300)
+    print(f"⏳ Ronda de teste {agora.strftime('%H:%M:%S')} concluída.")
+    time.sleep(30) # 30 segundos entre as rondas para testesleep(300)
