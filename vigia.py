@@ -1,11 +1,11 @@
 import requests
 import time
+from datetime import datetime
 
 # --- CONFIGURAÇÃO ---
 TOKEN_TELEGRAM = "8710482509:AAFIqDYVg00TZYJ5ydrLPzeVehXoPS28t_Q"
 CHAT_ID = "982976668"
 
-# Lista com links diretos (Originais)
 LINKS_PARA_VIGIAR = {
     "Lápis de Cor - ML": "https://www.mercadolivre.com.br/lapis-de-cor-sextavado-60-cores-ecolapis-faber-castell/p/MLB19958019",
     "Samsung A56": "https://www.mercadolivre.com.br/samsung-galaxy-a56-5g-256gb-8gb-ram/p/MLB1039433241",
@@ -38,34 +38,34 @@ def enviar_aviso(nome, link, silencioso=False):
 
 print("🔍 Monitor Mendeshop Ativo!")
 
+ultima_ronda_enviada = -1 # Guarda a hora da última notificação de status
+
 while True:
+    agora = datetime.now()
+    hora_atual = agora.hour
+    minuto_atual = agora.minute
+
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
-            # Fingindo ser um navegador real para evitar o bloqueio do ML
             headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-                'Accept-Language': 'pt-BR,pt;q=0.9'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
             }
             resposta = requests.get(link, headers=headers, timeout=30)
             
-            # Se der 404 (Página não encontrada) ou 410 (Removido), o link realmente caiu
+            # Alerta imediato se o link cair (404)
             if resposta.status_code in [404, 410]:
                 print(f"🚩 LINK MORTO: {nome}")
-                enviar_aviso(f"LINK QUEBRADO (404): {nome}", link)
-            
-            # Se der 200, está tudo perfeito
-            elif resposta.status_code == 200:
-                print(f"✅ OK: {nome}")
-            
-            # Outros códigos (403, 503) geralmente são bloqueios temporários do servidor, ignoramos para não dar alarme falso
+                enviar_aviso(f"🚨 LINK CAIU (404): {nome}", link)
             else:
-                print(f"⚠️ Status {resposta.status_code} em {nome} (Bloqueio provisório)")
-                
-        except Exception as e:
+                print(f"✅ OK: {nome}")
+        except:
             print(f"❌ Erro de conexão em {nome}")
-            
-    print("⏳ Ronda finalizada. Aguardando 5 minutos...")
+
+    # Lógica para avisar apenas Meio-dia (12h) e Meia-noite (00h)
+    if hora_atual in [0, 12] and hora_atual != ultima_ronda_enviada:
+        enviar_aviso("☀️ STATUS DIÁRIO" if hora_atual == 12 else "🌙 STATUS NOTURNO", 
+                     "Ronda concluída. Todos os links estão ativos e a Mendeshop está OK!")
+        ultima_ronda_enviada = hora_atual # Registra que já avisou nesta hora
+
+    print(f"⏳ Ronda de {agora.strftime('%H:%M')} finalizada. Próxima em 5 min...")
     time.sleep(300)
-    enviar_aviso("RONDA CONCLUÍDA", "Todos os itens foram checados e estão OK.", silencioso=True)
-    print("⏳ Tudo conferido. Aguardando 1 minuto...")
-    time.sleep(60)
