@@ -45,38 +45,47 @@ def enviar_aviso(mensagem_texto, link="", silencioso=False):
     payload = {"chat_id": CHAT_ID, "text": texto, "parse_mode": "Markdown", "disable_notification": silencioso}
     try:
         requests.post(url, data=payload)
-    except:
-        pass
+    except Exception as e:
+        print(f"Erro ao enviar Telegram: {e}")
 
 # Inicia o servidor fantasma em uma thread
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
-print("🔍 Monitor Mendeshop Ativo (Ronda de 1 em 1 hora)")
-enviar_aviso("✅ **Monitor Iniciado!**\nA partir de agora, farei rondas a cada 1 hora para checar seus links.")
+print("🔍 Monitor Mendeshop Ativo (Disfarce de Humano + Ronda 1h)")
+enviar_aviso("✅ **Monitor de Links Atualizado!**\nDisfarce aplicado. Ronda a cada 1 hora iniciada.")
 
 while True:
     agora = datetime.now()
-    
-    # 1. Checagem técnica de todos os links
     links_com_erro = 0
+    
+    # Cabeçalhos para fingir ser um navegador Chrome real vindo do Google
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Referer': 'https://www.google.com.br/'
+    }
+
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-            # Pequena pausa entre cada requisição para não ser bloqueado
-            time.sleep(2) 
-            resposta = requests.get(link, headers=headers, timeout=20)
+            time.sleep(5) # Pausa de segurança para não ser bloqueado
+            resposta = requests.get(link, headers=headers, timeout=30)
             
+            # Se der erro 404/410, tenta mais uma vez antes de confirmar
             if resposta.status_code in [404, 410]:
-                enviar_aviso(f"🚨 **LINK CAIU (404/410):** {nome}", link)
+                time.sleep(10)
+                resposta = requests.get(link, headers=headers, timeout=30)
+
+            if resposta.status_code in [404, 410]:
+                enviar_aviso(f"🚨 **LINK CAIU DE VERDADE:** {nome}", link)
                 links_com_erro += 1
+            else:
+                print(f"✅ {nome}: OK (Status {resposta.status_code})")
         except:
             print(f"❌ Erro de conexão em {nome}")
 
-    # 2. Aviso de Ronda no Telegram (Sempre a cada 1 hora)
+    # Resumo da ronda horária
     resumo = "Todos os links estão OK! ✅" if links_com_erro == 0 else f"Atenção: {links_com_erro} link(s) com problema! ⚠️"
-    enviar_aviso(f"🕒 **RONDA DE {agora.strftime('%H:00')}**\n\n{resumo}", silencioso=True)
+    enviar_aviso(f"🕒 **RONDA DAS {agora.strftime('%H:00')}**\n\n{resumo}", silencioso=True)
 
-    print(f"⏳ Ronda de {agora.strftime('%H:%M')} finalizada. Próxima em 1 hora.")
-    
-    # Espera 1 hora (3600 segundos)
+    print(f"⏳ Ronda finalizada às {agora.strftime('%H:%M')}. Próxima em 1 hora.")
     time.sleep(3600)
