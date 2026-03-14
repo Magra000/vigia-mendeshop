@@ -51,28 +51,32 @@ def enviar_aviso(mensagem_texto, link="", silencioso=False):
 # Inicia o servidor fantasma em uma thread
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
-print("🔍 Monitor Mendeshop Ativo e Oficial!")
-ultima_ronda_enviada = -1
+print("🔍 Monitor Mendeshop Ativo (Ronda de 1 em 1 hora)")
+enviar_aviso("✅ **Monitor Iniciado!**\nA partir de agora, farei rondas a cada 1 hora para checar seus links.")
 
 while True:
     agora = datetime.now()
-    hora_atual = agora.hour
-
+    
+    # 1. Checagem técnica de todos os links
+    links_com_erro = 0
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            # Pequena pausa entre cada requisição para não ser bloqueado
+            time.sleep(2) 
             resposta = requests.get(link, headers=headers, timeout=20)
             
             if resposta.status_code in [404, 410]:
-                enviar_aviso(f"🚨 LINK CAIU (404): {nome}", link)
+                enviar_aviso(f"🚨 **LINK CAIU (404/410):** {nome}", link)
+                links_com_erro += 1
         except:
             print(f"❌ Erro de conexão em {nome}")
 
-    # Notificação 12h e 00h (Relatório de Status)
-    if hora_atual in [0, 12] and hora_atual != ultima_ronda_enviada:
-        saudacao = "☀️ STATUS DIÁRIO" if hora_atual == 12 else "🌙 STATUS NOTURNO"
-        enviar_aviso(f"{saudacao}\n\nTodos os links checados e operando 100%!", silencioso=True)
-        ultima_ronda_enviada = hora_atual
+    # 2. Aviso de Ronda no Telegram (Sempre a cada 1 hora)
+    resumo = "Todos os links estão OK! ✅" if links_com_erro == 0 else f"Atenção: {links_com_erro} link(s) com problema! ⚠️"
+    enviar_aviso(f"🕒 **RONDA DE {agora.strftime('%H:00')}**\n\n{resumo}", silencioso=True)
 
-    print(f"⏳ Ronda de {agora.strftime('%H:%M')} finalizada. Próxima em 5 min.")
-    time.sleep(300) # Volta para 5 minutos
+    print(f"⏳ Ronda de {agora.strftime('%H:%M')} finalizada. Próxima em 1 hora.")
+    
+    # Espera 1 hora (3600 segundos)
+    time.sleep(3600)
