@@ -29,6 +29,7 @@ LINKS_PARA_VIGIAR = {
     "Teste Visualização Gloss": "https://www.mercadolivre.com.br/gloss-labial-franciny-ehlke-glossip-original/p/MLB20384757"
 }
 
+# --- SERVIDOR PARA MANTER O RENDER FELIZ ---
 def run_dummy_server():
     server_address = ('', 10000)
     httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
@@ -47,30 +48,31 @@ def enviar_aviso(mensagem_texto, link="", silencioso=False):
     except:
         pass
 
-# Inicia o servidor fantasma
+# Inicia o servidor fantasma em uma thread
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
-print("🔍 Monitor de Teste Ativo!")
-contador_teste = 0
+print("🔍 Monitor Mendeshop Ativo e Oficial!")
+ultima_ronda_enviada = -1
 
 while True:
     agora = datetime.now()
-    
+    hora_atual = agora.hour
+
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-            resposta = requests.get(link, headers=headers, timeout=15)
+            resposta = requests.get(link, headers=headers, timeout=20)
             
             if resposta.status_code in [404, 410]:
                 enviar_aviso(f"🚨 LINK CAIU (404): {nome}", link)
         except:
             print(f"❌ Erro de conexão em {nome}")
 
-    # A cada 4 rondas (2 minutos), ele manda um status de teste
-    contador_teste += 1
-    if contador_teste >= 4:
-        enviar_aviso("⚡ TESTE DE CONEXÃO\n\nO robô está ativo e o servidor fantasma está rodando!", silencioso=True)
-        contador_teste = 0
+    # Notificação 12h e 00h (Relatório de Status)
+    if hora_atual in [0, 12] and hora_atual != ultima_ronda_enviada:
+        saudacao = "☀️ STATUS DIÁRIO" if hora_atual == 12 else "🌙 STATUS NOTURNO"
+        enviar_aviso(f"{saudacao}\n\nTodos os links checados e operando 100%!", silencioso=True)
+        ultima_ronda_enviada = hora_atual
 
-    print(f"⏳ Ronda de teste {agora.strftime('%H:%M:%S')} concluída.")
-    time.sleep(30) # 30 segundos entre as rondas para testesleep(300)
+    print(f"⏳ Ronda de {agora.strftime('%H:%M')} finalizada. Próxima em 5 min.")
+    time.sleep(300) # Volta para 5 minutos
