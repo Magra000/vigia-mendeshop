@@ -5,7 +5,7 @@ import time
 TOKEN_TELEGRAM = "8710482509:AAFIqDYVg00TZYJ5ydrLPzeVehXoPS28t_Q"
 CHAT_ID = "982976668"
 
-# Lista completa da Mendeshop (17 itens)
+# Lista atualizada da Mendeshop (21 itens agora)
 LINKS_PARA_VIGIAR = {
     "Lápis de Cor - ML": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BOiejnazCwnp%2BP5avEqP70ywBWSiSGyjiEzKomhEUsEXePNMcZsEhEV2Hnl0ZFZdb8fmziZr44y8ETGPmN56R8utyp0ypJapZlhtjGNMcUP9LZ1gpF7IpPH8262BBVwTlkxcTHjeAfOqkL5oS2pgX0bGIeAAe4KMHju8ZT6PPKdWFiaGOaXAAwrBcBD%2F%2FiKy6wFXh18%3D",
     "Samsung A56": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BClDSSEgSC7N4CxCB5VNy4E%2BhljPqTyhszvnMjZLnxRN%2FYx01xmYv2gml5wRzJ8w%2Bjw%2BJjZdnxuEbXeculuPpTLLltpBguCItegGhmrZVoAyJ8HGimL3iJT1HwPQj4VN9O28%2Bg%2FFPkWGdRPoKtByynKijH%2Fys1FKicLueUQeLq8oVBVWBbXBwskVFT%2FD6KLbb98G08I%3D",
@@ -23,7 +23,12 @@ LINKS_PARA_VIGIAR = {
     "Lavadora Vonder": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BMMWGCki8nnEIX27Ag1PY54AZGSHqjgA%2F5H0j0mxignbFLzSb06sfgE4jeHw%2FwEUn5OKjvV4pKVWHykmenCRwvl%2F5ujYnhB8tTzLft0cpLvZBcaXftiY%2Bp7HySQFZAJE4qIimtsgrA%2BibmwUM%2F%2F7qFOVJaa0cSU1hUCiCRxh2jFYSGUMx2ThPCwAhNEHCQz0hTv770c%3D",
     "Prateleira de Canto": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BDhS5K%2FrYaAUVQJ6EWNgEf4P2ZelxEAq1W2yrTJoMSBcmfvhh0SDU8gVhdlzTO0qfrc6Ho3OQCCujJxZWh0Nv74yZbjoC5UhIivcZj6%2F2pd1jheM3c1QzMgwxW4c8rr%2Flrlc4BMbT1quP4iRJp5gqdkrBgjfDn7S6VWReJ2pEeyRrlS6KQC3eZln1SIS5tauTMj5Ow%3D%3D",
     "Espelho Sala de Estar": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BBG5I%2BXGG9n17kQToKSvJNJe%2BWRQ2Q3c39i0Sem5%2Bszre8WX0bv4NmRSux9q3reLmkfcsq%2FGCCNnj%2FqpGp1VTG6htuneY4cKOGWcS6xddJ0cDRBZD9DFMHlW%2FyiC1SENVuWQcgccYMJgKwdJf0K1377RNReJEqUXwqarZyb3d%2F8ca75RKo8jhPCa1i0ntPluegevmQ%3D%3D",
-    "Gloss Franciny Chaveiro": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BLqFHNMjAizFpuA%2Fp2rClq7zOr8XbmvEj%2BohqqivKpZJl7nTVEYOZK3jbezyio87QCCg1krAajI6QBoMjuHpbDRPX5mQDbLkpTuSc0H3BnVGmK6m9HcBCFUR7mpCZcaFTXPYPrJpwCYWyLbdepbZ2660NkSzU%2FoW7YvP1REBIcd8hy7c07zJx6LbkNPFIZiMD5Wx8Q%3D%3D&utm_source=Pinterest&utm_medium=organic"
+    "Gloss Franciny Chaveiro": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BLqFHNMjAizFpuA%2Fp2rClq7zOr8XbmvEj%2BohqqivKpZJl7nTVEYOZK3jbezyio87QCCg1krAajI6QBoMjuHpbDRPX5mQDbLkpTuSc0H3BnVGmK6m9HcBCFUR7mpCZcaFTXPYPrJpwCYWyLbdepbZ2660NkSzU%2FoW7YvP1REBIcd8hy7c07zJx6LbkNPFIZiMD5Wx8Q%3D%3D&utm_source=Pinterest&utm_medium=organic",
+    # --- NOVOS LINKS ADICIONADOS ---
+    "Hub USB": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BKc25LcJYMtcimioGHOc8i4FcK2gaVUvuH3sLIpRNypYpx24idq0jilzrpGd6gf0PB8VBardylMUddTG6lxcnPpHRWE%2Fg7qvF4EU7OJBs%2FiN%2FhX%2F2Ste7ucFNrskUsBXvkeaieyIxagZ%2Bf9VXpQ5wJbNItUPp%2BQipSQ%2BlzvlAPto7zp2t1%2FBTXx7C0m%2Blp4je3evSQ%3D%3D",
+    "Câmera de Segurança": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BBfMLS24/kTlpvREK8IGiMmq5ToPTturRn5VIjWl2ZGOYKKMX622mZY64MQrWR7ItemuZOLn5buunGiHo8gA7x8zLOnOwLbWWdr5CgNqT4b08YTLvJGd0wk96SN%2BdslP6lkHD0zp4PWYY0XkuVpapn1VnyiN4G2uBGHWmlbAV0IXlBYvqQ7Ur74fWXIM/w8nBW0lUYg%3D",
+    "Teclado Mecânico": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BDKh2TsP%2FuuKJUaOP6spoeqg2%2FURnuIOAcsVOX8879tFw8%2FFdnEsd8g19ranAJgQNYQyljZ9ZZEM7jCuqnx2UJbJ5K24bbO8NqTLQEpIh4bti5KB6260s0uhl63sKaqUeQ2Jo1ENbZ9gnJ6FLQszxpoGtl%2BGrmhOKDkPKkbu42uMCJJCe84G%2FB6KI3jRyHKNaC%2Bn3WI%3D&utm_source=Pinterest&utm_medium=organic",
+    "Mouse Gamer G203": "https://www.mercadolivre.com.br/social/mendeshop?matt_word=pinterest&matt_tool=42893323&forceInApp=true&ref=BGSkxB1qCm41x5jxEK6zoqEdKYDlxphpL6N5PcUdCFOemR9hrc2a1r%2ByxyUGYsIqD0MfagxAn376iOVQ8tI40VlzGPpRbfTOmggkjIp0tR2%2BKqXcdEQQUTLnogmXI7MpID%2Far3rJUgx%2BTvEFN2uOivv9MqytH0GczaKtKdUu8zBlo7OPxfR%2FcDwgRjumqhHAmcTkepk%3D&utm_source=Pinterest&utm_medium=organic"
 }
 
 def enviar_aviso(nome, link, silencioso=False):
@@ -46,10 +51,8 @@ while True:
     for nome, link in LINKS_PARA_VIGIAR.items():
         try:
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
-            # allow_redirects=True permite ver se o ML te jogou para a vitrine geral
             resposta = requests.get(link, headers=headers, timeout=25, allow_redirects=True)
             
-            # Checa status ou se a palavra 'ref=' sumiu da URL final (indica desvio)
             if resposta.status_code != 200 or "ref=" not in resposta.url:
                 print(f"🚩 Link furado detectado: {nome}")
                 enviar_aviso(f"🚨 ALERTA: {nome} (Link Quebrado ou Desviado)", link, silencioso=False)
@@ -60,12 +63,9 @@ while True:
             print(f"❌ Erro de Conexão em {nome}: {e}")
             enviar_aviso(f"🔥 ERRO TÉCNICO: {nome}", link, silencioso=False)
         
-        # Pausa de 5 segundos entre links para não ser bloqueado
         time.sleep(5) 
     
-    # Envia aviso de que a checagem terminou (modo silencioso)
     enviar_aviso("RONDA CONCLUÍDA", "Todos os itens foram checados e estão operacionais.", silencioso=True)
     
     print("⏳ Tudo conferido. Próxima ronda em 6 horas...")
-    # 21600 segundos = 6 horas
     time.sleep(21600)
